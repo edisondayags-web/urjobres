@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UR JobRes</title>
+<meta property="og:title" content="Job post on UR JobRes">
+<meta property="og:description" content="Tap to view this job post and apply.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#030A1E;color:#fff;font-family:system-ui,sans-serif;min-height:100vh;display:flex;justify-content:center}
+.w{width:100%;max-width:480px;padding:24px 20px}
+.brand{font-size:14px;color:#3D8BFF;font-weight:600;margin-bottom:20px}
+.nick{font-size:15px;color:#9DB4E0;margin:0 0 4px}
+h1{font-size:24px;margin:0 0 6px}
+.loc{color:#9DB4E0;font-size:14px;margin:0 0 16px}
+.body{background:#0B1632;border-radius:12px;padding:14px;font-size:15px;line-height:1.55;white-space:pre-wrap;word-break:break-word;margin:0 0 20px}
+.note{font-size:13px;color:#9DB4E0;margin:0 0 20px}
+a.b{display:block;text-align:center;padding:14px;border-radius:10px;font-weight:600;text-decoration:none;margin-bottom:10px;font-size:15px}
+.p{background:#1A5CFF;color:#fff}
+.s{background:#0B1632;color:#fff;border:1px solid #1E2F5A}
+</style></head><body><div class="w">
+<div class="brand">UR JobRes</div>
+<div id="c"><p class="note">Loading...</p></div>
+</div>
+<script>
+var FB="https://www.facebook.com/profile.php?id=61595164884599";
+var KEY="AIzaSyAYRXS-rRM91GLKwYR4ERcjopgCso_PlWY";
+var PID="ur-biores-e6db4";
+var id=new URLSearchParams(location.search).get("id")||"";
+var c=document.getElementById("c");
+function el(t,cl,tx){var e=document.createElement(t);if(cl)e.className=cl;if(tx!=null)e.textContent=tx;return e}
+function dl(){var a=el("a","b s","Download the app");a.href=FB;c.appendChild(a)}
+function openBtn(){var a=el("a","b p","Open in UR JobRes");a.href="intent://post/"+encodeURIComponent(id)+"#Intent;scheme=urjobres;package=com.saltech.urdocs;S.browser_fallback_url="+encodeURIComponent(FB)+";end";c.appendChild(a)}
+function gone(){c.textContent="";c.appendChild(el("h1",null,"Post not available"));c.appendChild(el("p","note","It may have expired or been removed."));dl()}
+if(!/^[A-Za-z0-9_-]{1,64}$/.test(id)){gone()}else{
+fetch("https://firestore.googleapis.com/v1/projects/"+PID+"/databases/(default)/documents/post_previews/"+id+"?key="+KEY)
+.then(function(r){if(!r.ok)throw 0;return r.json()})
+.then(function(d){
+var f=d.fields||{};
+function g(k){return f[k]&&f[k].stringValue?f[k].stringValue:""}
+var ex=f.expiresAt&&f.expiresAt.timestampValue;
+if(ex&&new Date(ex)<new Date()){gone();return}
+c.textContent="";
+if(g("nick"))c.appendChild(el("p","nick",g("nick")));
+c.appendChild(el("h1",null,g("title")||"Job post"));
+if(g("loc"))c.appendChild(el("p","loc",g("loc")));
+if(g("body"))c.appendChild(el("p","body",g("body")));
+c.appendChild(el("p","note","Contact details are in the app. No app yet? Tap Download, then open this link again."));
+openBtn();dl();
+}).catch(gone)}
+</script></body></html>
